@@ -7,6 +7,7 @@ networks:
 services:
 
   config-server:
+    container_name: config-server
     build: ../config-server
     image: config-server:1.0
     networks:
@@ -17,6 +18,7 @@ services:
       eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
 
   eureka-server:
+    container_name: eureka-server
     build: ../eureka-server
     image: eureka-server:1.0
     networks:
@@ -25,6 +27,7 @@ services:
       - "8761:8761"
 
   api-gateway:
+    container_name: api-gateway
     build: ../api-gateway
     image: api-gateway:1.0
     networks:
@@ -34,3 +37,30 @@ services:
     environment:
       eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
       spring.cloud.config.uri: http://config-server:8888
+
+  mysql:
+    container_name: mysql
+    restart: always
+    image: mysql:8.0
+    ports:
+      - "3307:3307"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: microservice_a
+    volumes:
+    - /var/lib/mysql
+
+  microservice-a:
+    container_name: microservice-a
+    build: ../microservice-a
+    image: microservice-a:1.0
+    networks:
+      - microservice-network
+    ports:
+      - "9001:9001"
+    environment:
+      eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
+      spring.cloud.config.uri: http://config-server:8888
+
+#volumes:
+# - my-datavolume
