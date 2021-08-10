@@ -25,6 +25,8 @@ services:
       - microservice-network
     ports:
       - "8761:8761"
+    depends_on:
+      - config-server
 
   api-gateway:
     container_name: api-gateway
@@ -34,6 +36,11 @@ services:
       - microservice-network
     ports:
       - "9191:9191"
+    depends_on:
+      - config-server
+      - eureka-server
+      - microservice-a
+      - microservice-b
     environment:
       eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
       spring.cloud.config.uri: http://config-server:8888
@@ -69,6 +76,8 @@ services:
     ports:
       - "9001:9001"
     depends_on:
+      - config-server
+      - eureka-server
       - mysql-container
     environment:
       eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
@@ -84,6 +93,8 @@ services:
     ports:
       - "9002:9002"
     depends_on:
+      - config-server
+      - eureka-server
       - mysql-container
     environment:
       eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
