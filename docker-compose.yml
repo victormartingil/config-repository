@@ -47,7 +47,7 @@ services:
 
   mysql-container:
     container_name: mysql-container
-    image: mysql:latest
+    image: mysql:8.0.26
     networks:
       - microservice-network
     ports:
